@@ -1,6 +1,6 @@
-use rand::Rng;
+use anyhow::{Context, Result};
 use klystron::Vertex;
-use anyhow::{Result, Context};
+use rand::Rng;
 
 mod display;
 
@@ -17,7 +17,11 @@ fn main() -> Result<()> {
     println!("Maze time: {}s", start.elapsed().as_secs_f32());
 
     let start = std::time::Instant::now();
-    let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
+    let indices: Vec<u16> = line_indices(&nodes)
+        .into_iter()
+        //.rev()
+        .map(|i| i as u16)
+        .collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
     println!("Mesh time: {}s", start.elapsed().as_secs_f32());
 
@@ -41,7 +45,6 @@ fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> 
     }
     vertices
 }
-
 
 #[derive(Copy, Clone)]
 struct Node {
