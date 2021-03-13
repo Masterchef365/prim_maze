@@ -94,7 +94,9 @@ fn neighborhood(idx: usize, width: usize, height: usize) -> impl Iterator<Item =
 fn line_indices(nodes: &[Node]) -> Vec<usize> {
     let mut visited = std::collections::HashSet::new();
     let mut indices = Vec::new();
-    for idx in 0..nodes.len() {
+    let mut rng = rand::thread_rng();
+    let random_indices = rand::seq::index::sample(&mut rng, nodes.len(), nodes.len());
+    for idx in random_indices {
         let mut current = idx;
         indices.push(current);
         while let Some(prev) = nodes[current].prev {
