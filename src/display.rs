@@ -21,19 +21,12 @@ impl App2D for MyApp {
 
         let mesh = engine.add_mesh(&vertices, &indices)?;
 
+        let margin = 0.10;
         let maze = Object {
             mesh,
-            /*
             transform: Matrix4::new(
-                2., 0., 0., -1., //
-                0., 2., 0., -1., //
-                0., 0., 1., 0., //
-                0., 0., 0., 1., //
-            ),
-            */
-            transform: Matrix4::new(
-                2., 0., 0., -1., //
-                0., 2., 0., -1., //
+                2. - margin, 0., 0., margin - 1., //
+                0., 2. - margin, 0., margin - 1., //
                 0., 0., 1., 0., //
                 0., 0., 0., 1., //
             ),
