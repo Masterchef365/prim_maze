@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 klystron = { path = "../klystron" }
 rand = "0.8"
+anyhow = "1"

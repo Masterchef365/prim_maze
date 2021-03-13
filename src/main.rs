@@ -1,13 +1,16 @@
 use rand::Rng;
 use klystron::Vertex;
+use anyhow::Result;
 
-fn main() {
+mod display;
+
+fn main() -> Result<()> {
     let width = 10;
     let height = 10;
     let nodes = maze(width, height);
     let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
-    dbg!(vertices);
+    display::visualize((vertices, indices))
 }
 
 fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {
@@ -98,7 +101,7 @@ fn neighborhood(idx: usize, width: usize, height: usize) -> impl Iterator<Item =
     debug_assert!(idx < width * height);
     std::iter::empty()
         .chain((idx > width).then(|| idx - width))
-        .chain((idx > 0).then(|| idx - 1))
+        .chain((idx > 0 && (idx - 1) / width == idx / width).then(|| idx - 1))
         .chain((idx + width < width * height).then(|| idx + width))
-        .chain((idx + 1 < width * height).then(|| idx + 1))
+        .chain((idx + 1 < width * height && (idx + 1) / width == idx / width).then(|| idx + 1))
 }

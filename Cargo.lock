@@ -862,6 +862,7 @@ checksum = "ac74c624d6b2d21f425f752262f42188365d7b8ff1aff74c82e45136510a4857"
 name = "prims_maze"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "klystron",
  "rand 0.8.3",
 ]
