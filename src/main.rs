@@ -1,10 +1,31 @@
 use rand::Rng;
+use klystron::Vertex;
 
 fn main() {
-    let nodes = maze(10, 10);
-    let indices = line_indices(&nodes);
-    dbg!(indices);
+    let width = 10;
+    let height = 10;
+    let nodes = maze(width, height);
+    let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
+    let vertices = vertex_mesh_dist(width, height, &nodes);
+    dbg!(vertices);
 }
+
+fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {
+    let mut vertices = Vec::with_capacity(width * height);
+    for y in 0..height {
+        let y = y as f32 / height as f32;
+        for x in 0..width {
+            let x = x as f32 / width as f32;
+            let dist = nodes[vertices.len()].dist as f32 / u32::MAX as f32;
+            vertices.push(Vertex {
+                pos: [x, y, 0.],
+                color: [x, y, dist],
+            });
+        }
+    }
+    vertices
+}
+
 
 #[derive(Copy, Clone)]
 struct Node {
