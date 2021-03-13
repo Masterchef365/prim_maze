@@ -5,7 +5,7 @@ use anyhow::Result;
 mod display;
 
 fn main() -> Result<()> {
-    let width = 100;
+    let width = 50;
     let height = 100;
 
     let start = std::time::Instant::now();
@@ -19,7 +19,7 @@ fn main() -> Result<()> {
 
     dbg!(vertices.len());
     dbg!(indices.len());
-    display::visualize((vertices, indices))
+    display::visualize((vertices, indices), false)
 }
 
 fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {
@@ -87,14 +87,6 @@ fn maze(width: usize, height: usize) -> Vec<Node> {
                 }
             }
         }
-    }
-}
-
-fn order_lower((a, b): (usize, usize)) -> (usize, usize) {
-    if a < b {
-        (a, b)
-    } else {
-        (b, a)
     }
 }
 

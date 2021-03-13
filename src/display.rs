@@ -4,19 +4,27 @@ use klystron::{
     DrawType, Engine, FramePacket, Matrix4, Object, Vertex, WinitBackend, UNLIT_FRAG, UNLIT_VERT,
 };
 
+pub type MeshData = (Vec<Vertex>, Vec<u16>);
+
+struct DrawData {
+    mesh: MeshData,
+    animate: bool,
+}
+
 struct MyApp {
     maze: Object,
     n_maze_indices: usize,
     frame: usize,
+    animate: bool,
 }
-
-pub type MeshData = (Vec<Vertex>, Vec<u16>);
 
 impl App2D for MyApp {
     const TITLE: &'static str = "Visualizer";
-    type Args = MeshData;
+    type Args = DrawData;
 
-    fn new(engine: &mut WinitBackend, (vertices, indices): Self::Args) -> Result<Self> {
+    fn new(engine: &mut WinitBackend, args: Self::Args) -> Result<Self> {
+        let DrawData { mesh: (vertices, indices), animate } = args;
+
         let material = engine.add_material(UNLIT_VERT, UNLIT_FRAG, DrawType::Lines)?;
 
         let mesh = engine.add_mesh(&vertices, &indices)?;
@@ -38,6 +46,7 @@ impl App2D for MyApp {
         Ok(Self {
             maze,
             frame: 0,
+            animate,
             n_maze_indices,
         })
     }
@@ -47,14 +56,16 @@ impl App2D for MyApp {
     }
 
     fn frame(&mut self, _engine: &mut WinitBackend) -> FramePacket {
-        self.maze.subset = Some((self.n_maze_indices - self.frame % self.n_maze_indices) as u32);
-        self.frame += self.n_maze_indices / (60 * 4);
+        if self.animate {
+            self.maze.subset = Some((self.n_maze_indices - self.frame % self.n_maze_indices) as u32);
+            self.frame += self.n_maze_indices / (60 * 4);
+        }
         FramePacket {
             objects: vec![self.maze],
         }
     }
 }
 
-pub fn visualize(mesh: MeshData) -> Result<()> {
-    launch::<MyApp>(mesh)
+pub fn visualize(mesh: MeshData, animate: bool) -> Result<()> {
+    launch::<MyApp>(DrawData { mesh, animate })
 }
