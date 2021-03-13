@@ -4,7 +4,7 @@ use klystron::{
     DrawType, Engine, FramePacket, Matrix4, Object, Vertex, WinitBackend, UNLIT_FRAG, UNLIT_VERT,
 };
 
-pub type MeshData = (Vec<Vertex>, Vec<u16>);
+pub type MeshData = (Vec<Vertex>, Vec<u32>);
 
 struct DrawData {
     mesh: MeshData,
@@ -64,7 +64,7 @@ impl App2D for MyApp {
         }
         if self.animate {
             self.maze.subset = Some(self.frame as u32);
-            self.frame += (self.frame / 180) + 1;
+            self.frame += (self.frame / 480) + 2;
             //self.frame += 8;
         }
         FramePacket {

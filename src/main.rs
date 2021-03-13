@@ -17,10 +17,10 @@ fn main() -> Result<()> {
     println!("Maze time: {}s", start.elapsed().as_secs_f32());
 
     let start = std::time::Instant::now();
-    let indices: Vec<u16> = line_indices(&nodes)
+    let indices: Vec<u32> = line_indices(&nodes)
         .into_iter()
         //.rev()
-        .map(|i| i as u16)
+        .map(|i| i as u32)
         .collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
     println!("Mesh time: {}s", start.elapsed().as_secs_f32());
