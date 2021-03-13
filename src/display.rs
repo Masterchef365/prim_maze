@@ -23,6 +23,14 @@ impl App2D for MyApp {
 
         let maze = Object {
             mesh,
+            /*
+            transform: Matrix4::new(
+                2., 0., 0., -1., //
+                0., 2., 0., -1., //
+                0., 0., 1., 0., //
+                0., 0., 0., 1., //
+            ),
+            */
             transform: Matrix4::new(
                 2., 0., 0., -1., //
                 0., 2., 0., -1., //

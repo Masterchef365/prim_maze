@@ -5,11 +5,13 @@ use anyhow::Result;
 mod display;
 
 fn main() -> Result<()> {
-    let width = 50;
-    let height = 50;
+    let width = 10;
+    let height = 10;
     let nodes = maze(width, height);
     let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
+    dbg!(vertices.len());
+    dbg!(indices.len());
     display::visualize((vertices, indices))
 }
 
@@ -81,7 +83,16 @@ fn maze(width: usize, height: usize) -> Vec<Node> {
     }
 }
 
+fn order_lower((a, b): (usize, usize)) -> (usize, usize) {
+    if a < b {
+        (a, b)
+    } else {
+        (b, a)
+    }
+}
+
 fn line_indices(nodes: &[Node]) -> Vec<usize> {
+    let mut visited = std::collections::HashSet::new();
     let mut indices = Vec::new();
     for idx in 0..nodes.len() {
         let mut current = idx;
@@ -89,6 +100,11 @@ fn line_indices(nodes: &[Node]) -> Vec<usize> {
         while let Some(prev) = nodes[current].prev {
             indices.push(prev);
             indices.push(prev);
+            if visited.contains(&prev) {
+                break;
+            } else {
+                visited.insert(prev);
+            }
             current = prev;
         }
         indices.push(current);
