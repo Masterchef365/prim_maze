@@ -1,12 +1,16 @@
 use rand::Rng;
 use klystron::Vertex;
-use anyhow::Result;
+use anyhow::{Result, Context};
 
 mod display;
 
 fn main() -> Result<()> {
-    let width = 50;
-    let height = 100;
+    let mut args = std::env::args().skip(1);
+    let err = "Argparse error";
+    let width = args.next().unwrap_or("100".into()).parse().context(err)?;
+    let height = args.next().unwrap_or("100".into()).parse().context(err)?;
+    let disable_anim = args.next().is_some();
+    println!("Computing an {}x{} maze.", width, height);
 
     let start = std::time::Instant::now();
     let nodes = maze(width, height);
@@ -19,7 +23,7 @@ fn main() -> Result<()> {
 
     dbg!(vertices.len());
     dbg!(indices.len());
-    display::visualize((vertices, indices), false)
+    display::visualize((vertices, indices), !disable_anim)
 }
 
 fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {

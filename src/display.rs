@@ -18,6 +18,15 @@ struct MyApp {
     animate: bool,
 }
 
+fn normalize_with_margin(margin: f32) -> Matrix4<f32> {
+    Matrix4::new(
+        2. - margin, 0., 0., margin - 1., //
+        0., 2. - margin, 0., margin - 1., //
+        0., 0., 1., 0., //
+        0., 0., 0., 1., //
+    )
+}
+
 impl App2D for MyApp {
     const TITLE: &'static str = "Visualizer";
     type Args = DrawData;
@@ -29,15 +38,9 @@ impl App2D for MyApp {
 
         let mesh = engine.add_mesh(&vertices, &indices)?;
 
-        let margin = 0.10;
         let maze = Object {
             mesh,
-            transform: Matrix4::new(
-                2. - margin, 0., 0., margin - 1., //
-                0., 2. - margin, 0., margin - 1., //
-                0., 0., 1., 0., //
-                0., 0., 0., 1., //
-            ),
+            transform: normalize_with_margin(0.05),
             material,
             subset: None,
         };
