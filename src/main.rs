@@ -5,8 +5,8 @@ use anyhow::Result;
 mod display;
 
 fn main() -> Result<()> {
-    let width = 10;
-    let height = 10;
+    let width = 50;
+    let height = 50;
     let nodes = maze(width, height);
     let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
