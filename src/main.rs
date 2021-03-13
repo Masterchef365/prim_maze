@@ -5,11 +5,18 @@ use anyhow::Result;
 mod display;
 
 fn main() -> Result<()> {
-    let width = 10;
-    let height = 10;
+    let width = 100;
+    let height = 100;
+
+    let start = std::time::Instant::now();
     let nodes = maze(width, height);
+    println!("Maze time: {}s", start.elapsed().as_secs_f32());
+
+    let start = std::time::Instant::now();
     let indices: Vec<u16> = line_indices(&nodes).into_iter().map(|i| i as u16).collect();
     let vertices = vertex_mesh_dist(width, height, &nodes);
+    println!("Mesh time: {}s", start.elapsed().as_secs_f32());
+
     dbg!(vertices.len());
     dbg!(indices.len());
     display::visualize((vertices, indices))

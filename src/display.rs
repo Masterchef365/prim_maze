@@ -47,8 +47,8 @@ impl App2D for MyApp {
     }
 
     fn frame(&mut self, _engine: &mut WinitBackend) -> FramePacket {
-        self.maze.subset = Some((self.frame % self.n_maze_indices) as u32);
-        self.frame += 1;
+        self.maze.subset = Some((self.n_maze_indices - self.frame % self.n_maze_indices) as u32);
+        self.frame += self.n_maze_indices / (60 * 4);
         FramePacket {
             objects: vec![self.maze],
         }
