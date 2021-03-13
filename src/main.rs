@@ -30,22 +30,6 @@ fn main() -> Result<()> {
     display::visualize((vertices, indices), !disable_anim)
 }
 
-fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {
-    let mut vertices = Vec::with_capacity(width * height);
-    for y in 0..height {
-        let y = y as f32 / height as f32;
-        for x in 0..width {
-            let x = x as f32 / width as f32;
-            let dist = nodes[vertices.len()].dist as f32 / u32::MAX as f32;
-            vertices.push(Vertex {
-                pos: [x, y, 0.],
-                color: [x, y, dist],
-            });
-        }
-    }
-    vertices
-}
-
 #[derive(Copy, Clone)]
 struct Node {
     dist: u32,
@@ -97,6 +81,16 @@ fn maze(width: usize, height: usize) -> Vec<Node> {
     }
 }
 
+fn neighborhood(idx: usize, width: usize, height: usize) -> impl Iterator<Item = usize> {
+    debug_assert!(width > 0 && height > 0);
+    debug_assert!(idx < width * height);
+    std::iter::empty()
+        .chain((idx > width).then(|| idx - width))
+        .chain((idx > 0 && (idx - 1) / width == idx / width).then(|| idx - 1))
+        .chain((idx + width < width * height).then(|| idx + width))
+        .chain((idx + 1 < width * height && (idx + 1) / width == idx / width).then(|| idx + 1))
+}
+
 fn line_indices(nodes: &[Node]) -> Vec<usize> {
     let mut visited = std::collections::HashSet::new();
     let mut indices = Vec::new();
@@ -118,12 +112,18 @@ fn line_indices(nodes: &[Node]) -> Vec<usize> {
     indices
 }
 
-fn neighborhood(idx: usize, width: usize, height: usize) -> impl Iterator<Item = usize> {
-    debug_assert!(width > 0 && height > 0);
-    debug_assert!(idx < width * height);
-    std::iter::empty()
-        .chain((idx > width).then(|| idx - width))
-        .chain((idx > 0 && (idx - 1) / width == idx / width).then(|| idx - 1))
-        .chain((idx + width < width * height).then(|| idx + width))
-        .chain((idx + 1 < width * height && (idx + 1) / width == idx / width).then(|| idx + 1))
+fn vertex_mesh_dist(width: usize, height: usize, nodes: &[Node]) -> Vec<Vertex> {
+    let mut vertices = Vec::with_capacity(width * height);
+    for y in 0..height {
+        let y = y as f32 / height as f32;
+        for x in 0..width {
+            let x = x as f32 / width as f32;
+            let dist = nodes[vertices.len()].dist as f32 / u32::MAX as f32;
+            vertices.push(Vertex {
+                pos: [x, y, 0.],
+                color: [x, vertices.len() as f32 / nodes.len() as f32, dist],
+            });
+        }
+    }
+    vertices
 }
